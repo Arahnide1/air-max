@@ -1,0 +1,6 @@
+.agents/
+.claude/
+.taste-skill/
+skills-lock.json
+skillfoxx-lock.json
+competitors.md
