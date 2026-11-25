@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#101014">
+  <meta name="description" content="Сигнал — интерактивная 3D-выставка AiR о рекламе в MAX. Три кинетических скульптуры, от сообщения до отклика.">
+  <title>Сигнал · AiR × MAX</title>
+  <link rel="icon" href="../assets/air-logo.svg">
+  <link rel="stylesheet" href="expo.css">
+  <script defer src="sculptures.js"></script>
+</head>
+<body>
+  <a class="skip" href="#signal">К выставке</a>
+  <header>
+    <a class="brand" href="#signal" aria-label="AiR, к началу выставки"><img src="../assets/air-logo.svg" alt="" width="40" height="40"><span>AiR Studio</span></a>
+    <nav aria-label="Залы выставки"><a href="#signal" aria-current="location">Сигнал</a><a href="#network">Резонанс</a><a href="#echo">Отклик</a></nav>
+    <button class="motion" type="button" hidden aria-label="Поставить анимацию на паузу"><b aria-hidden="true">Ⅱ</b><span>Пауза</span></button>
+  </header>
+  <main>
+    <section class="hall signal" id="signal" aria-labelledby="signal-title">
+      <div class="plate"><span>AiR × MAX</span><span>Цифровая выставка</span></div>
+      <div class="composition">
+        <div class="copy"><div class="kicker">Зал 01 / 03</div><h1 id="signal-title">Сигнал<span>.</span></h1>
+          <p>До первого клика есть мгновение, когда сообщение в ленте MAX ловит взгляд.</p>
+          <a class="advance" href="#network">В следующий зал <b aria-hidden="true">↓</b></a>
+        </div>
+        <figure><canvas aria-label="Ребристая хромированная лента, завязанная в пространственный узел"></canvas><figcaption>01 — Импульс</figcaption></figure>
+      </div>
+      <div class="hall-foot"><span>Реклама в MAX</span><span class="wave" aria-hidden="true"></span><span>Объект в движении</span></div>
+    </section>
+    <section class="hall network" id="network" aria-labelledby="network-title">
+      <div class="plate"><span>AiR × MAX</span><span>Распространение</span></div>
+      <div class="composition">
+        <div class="copy"><div class="kicker">Зал 02 / 03</div><h2 id="network-title">Резонанс<span>.</span></h2>
+          <p>Один пост звучит по-разному в городской афише и в канале о дизайне. Контекст меняет то, кто остановится и прочитает.</p>
+          <a class="advance" href="#echo">В следующий зал <b aria-hidden="true">↓</b></a>
+        </div>
+        <figure><canvas aria-label="Пространственный гироскоп из вращающихся металлических колец"></canvas><figcaption>02 — Орбиты</figcaption></figure>
+      </div>
+      <div class="hall-foot"><span>Тематические каналы</span><span class="wave" aria-hidden="true"></span><span>Нативное размещение</span></div>
+    </section>
+    <section class="hall echo" id="echo" aria-labelledby="echo-title">
+      <div class="plate"><span>AiR × MAX</span><span>Действие</span></div>
+      <div class="composition">
+        <div class="copy"><div class="kicker">Зал 03 / 03</div><h2 id="echo-title">Отклик<span>.</span></h2>
+          <p>Читатель подписывается на канал или оставляет заявку на сайте. У сигнала появляется ответ.</p>
+          <a class="advance" href="../">Как AiR запускает рекламу в MAX</a>
+        </div>
+        <figure><canvas aria-label="Кинетический цветок из глянцевых объёмных лепестков"></canvas><figcaption>03 — Раскрытие</figcaption></figure>
+      </div>
+      <div class="hall-foot"><a href="mailto:sale@airws.ru">sale@airws.ru</a><span class="wave" aria-hidden="true"></span><a href="#signal">К началу ↑</a></div>
+    </section>
+  </main>
+</body>
+</html>
