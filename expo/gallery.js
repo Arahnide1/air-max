@@ -19,17 +19,75 @@
     window.dispatchEvent(new Event('exhibitionchange'));
   }));
   const samples = [
-    ['15 заявок на расчёт','При бюджете 30 000 ₽ и 15 заявках на расчёт кухни одна заявка стоит 2 000 ₽. Из этих 15 обращений восемь подходят по региону и бюджету.'],
-    ['120 вступлений','Если шесть постов с бесплатным уроком стоят 36 000 ₽ и по ним подписались 120 человек, один подписчик обходится в 300 ₽.'],
-    ['18 обращений','При расходах 36 000 ₽ на посты о сезонном обслуживании и 18 обращениях каждое стоит 2 000 ₽. В этом примере девять человек записались в сервис.']
+    {
+      "heading": "15 заявок на расчёт",
+      "desc": "Тестируем объявления по городу и ведём на форму расчёта кухни. Менеджер отмечает в CRM обращения с подходящей географией и бюджетом.",
+      "stats": [
+        [
+          "Реклама",
+          "30 000 ₽"
+        ],
+        [
+          "Цена заявки",
+          "2 000 ₽"
+        ],
+        [
+          "Из них целевых",
+          "8"
+        ]
+      ]
+    },
+    {
+      "heading": "120 вступлений",
+      "desc": "Размещаем посты с бесплатным уроком в каналах о карьере и обучении. Для каждого посева используем отдельную ссылку, если по ней видны вступления.",
+      "stats": [
+        [
+          "Реклама",
+          "36 000 ₽"
+        ],
+        [
+          "Цена подписки",
+          "300 ₽"
+        ],
+        [
+          "Размещений",
+          "6"
+        ]
+      ]
+    },
+    {
+      "heading": "18 обращений",
+      "desc": "Тестируем посты про сезонное обслуживание в городских каналах. Звонки и формы сверяем с записями, чтобы понять, какие размещения приводят клиентов.",
+      "stats": [
+        [
+          "Реклама",
+          "36 000 ₽"
+        ],
+        [
+          "Цена обращения",
+          "2 000 ₽"
+        ],
+        [
+          "Записей",
+          "9"
+        ]
+      ]
+    }
   ];
   const outputs = document.querySelector('#receipt-copy');
   const switches = [...document.querySelectorAll('.case-switch button')];
   switches.forEach((button,index) => button.addEventListener('click', () => {
     page.dataset.sample = index;
     switches.forEach((item,i) => item.setAttribute('aria-pressed', String(i === index)));
-    outputs.firstElementChild.textContent = samples[index][0];
-    outputs.lastElementChild.textContent = samples[index][1];
+    const sample = samples[index];
+    outputs.querySelector("strong").textContent = sample.heading;
+    outputs.querySelector("p").textContent = sample.desc;
+    const terms = outputs.querySelectorAll("dt");
+    const values = outputs.querySelectorAll("dd");
+    sample.stats.forEach(([label, value], i) => {
+      terms[i].textContent = label;
+      values[i].textContent = value;
+    });
     window.dispatchEvent(new Event('exhibitionchange'));
   }));
   document.querySelector('[data-pulse]').addEventListener('click', () => {
