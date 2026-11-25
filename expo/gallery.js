@@ -90,9 +90,6 @@
     });
     window.dispatchEvent(new Event('exhibitionchange'));
   }));
-  document.querySelector('[data-pulse]').addEventListener('click', () => {
-    window.dispatchEvent(new Event('hornpulse'));
-  });
   const cards = [...document.querySelectorAll('.route-cards article')];
   let queued = false;
   function animatePrints() {

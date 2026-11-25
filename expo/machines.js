@@ -354,8 +354,4 @@
   hosts.forEach(host=>observer.observe(host));
   addEventListener('resize',refresh);addEventListener('exhibitionchange',refresh);
   document.addEventListener('visibilitychange',refresh);
-  addEventListener('hornpulse',()=>{
-    const s=scenes.find(item=>item.host.dataset.machine==='horn');
-    if(s)fire(s);
-  });
 })();
