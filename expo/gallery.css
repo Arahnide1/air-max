@@ -55,3 +55,27 @@ html[data-paused=true] .opening h1 b{animation:none}
 @media (max-width: 760px) {
   .opening-copy h2 { font-size: clamp(26px,7.2vw,32px); }
 }
+
+.opening h1 {
+  top: 13%;
+  font-size: clamp(68px,min(12.4vw,25svh),270px);
+  white-space: nowrap;
+}
+.opening h1 b { font-weight: inherit; }
+.opening-copy > p:first-child { font-size: clamp(20px,2.15vw,35px); line-height: 1.12; letter-spacing: -.035em; }
+.exhibit .large { font-size: clamp(62px,10vw,180px); margin-top: 0; line-height: .88; }
+.destinations h2 { font-size: clamp(46px,6.1vw,113px); }
+.catalog h2 { font-size: clamp(50px,6.6vw,126px); }
+.selector .formats-intro,.print-info .sample-intro { margin-top: 0; }
+.horn-view:focus-visible { outline-offset: -5px; }
+@media (min-width: 761px) {
+  .horn-view { width: 83%; right: -11%; }
+}
+@media (max-width: 760px) {
+  .opening h1 { top: 7%; font-size: 20vw; }
+  .opening h1 b { display: block; }
+  .horn-view { top: 23%; height: 45%; }
+  .exhibit .large { font-size: 13vw; }
+  .destinations h2 { font-size: 12vw; }
+  .catalog h2 { font-size: 11vw; }
+}

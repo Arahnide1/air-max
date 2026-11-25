@@ -61,6 +61,27 @@
     });
   }
 
+  function makeWord(parent, color) {
+    const letters = [
+      [[0,0],[.19,0],[.19,.65],[.37,.40],[.50,.40],[.68,.65],[.68,0],[.87,0],[.87,1],[.68,1],[.435,.68],[.19,1],[0,1]],
+      [[0,0],[.21,0],[.28,.21],[.61,.21],[.69,0],[.9,0],[.55,1],[.35,1]],
+      [[0,0],[.24,0],[.45,.34],[.67,0],[.91,0],[.58,.51],[.90,1],[.67,1],[.45,.67],[.24,1],[.01,1],[.32,.51]]
+    ];
+    const word = group(parent);
+    const face = new T.MeshBasicMaterial({color});
+    const edge = paint(color === 0xffeea1 ? 0xbf6818 : 0x762042,.45,.25);
+    letters.forEach((points, index) => {
+      const shape = new T.Shape(points.map(([x,y]) => new T.Vector2(x,y)));
+      if (index === 1) {
+        shape.holes.push(new T.Path([new T.Vector2(.34,.40),new T.Vector2(.45,.72),new T.Vector2(.55,.40)]));
+      }
+      const geometry = new T.ExtrudeGeometry(shape, {depth:.24,bevelSize:.023,bevelThickness:.023,bevelSegments:2});
+      mesh(word,geometry,[face,edge],index*1.01-1.46,-.50,-.12);
+    });
+    word.visible = false;
+    return word;
+  }
+
   function horn(parent) {
     const core=group(parent);
     const outer=[[.006,-1.94],[.34,-1.94],[.43,-1.9],[.45,-1.76],[.45,-1.03],[.48,-.95]];
@@ -91,6 +112,10 @@
       const mat=new T.MeshBasicMaterial({color:0x675042,transparent:true,opacity:.45,depthWrite:false});
       return ring(core,0,0,1.3+i*.18,1.79+i*.09,.009,mat);
     });
+    const words = [0xffeea1,0xff91aa,0xffeea1].map(color => makeWord(core,color));
+    const faceCamera = new T.Quaternion();
+    const tilt = new T.Quaternion();
+    const angles = new T.Euler();
     return {base:[-.15,-.92,-.29],size:5.75,update(t,s) {
       waves.forEach((wave,i)=>{
         const phase=(t*.28+i/3+s.pulse*.55)%1;
@@ -98,6 +123,19 @@
         wave.scale.setScalar(1+phase*.25);wave.material.opacity=(1-phase)*(.51+s.pulse*.27);
       });
       motor.position.z=-s.pulse*.55;core.position.z=-s.pulse*.13;core.rotation.z=s.pulse*.08;
+      core.getWorldQuaternion(faceCamera).invert();
+      words.forEach((word,i) => {
+        const elapsed = s.still ? .32 + i*.09 : t - s.firedAt - i*.16;
+        word.visible = t - s.firedAt < 1.46 && elapsed >= 0 && elapsed < 1.14;
+        if (!word.visible) return;
+        const travel = elapsed / 1.14;
+        const spread = i - 1;
+        word.position.set(spread*.85*travel, spread*1.35*travel + Math.sin(travel*Math.PI)*.16, 1.30+travel*3.7);
+        const size = Math.min(.23+travel*1.55, .62) * (1-T.MathUtils.smoothstep(travel,.74,1)*.97);
+        word.scale.setScalar(size);
+        tilt.setFromEuler(angles.set(-.16, .36-travel*.65, spread*.28 + travel*.22));
+        word.quaternion.copy(faceCamera).multiply(tilt);
+      });
     }};
   }
 
@@ -226,11 +264,12 @@
     const rim=new T.DirectionalLight(0xf4f7ff,1.3);rim.position.set(4,2,-2);scene.add(rim);
     scene.add(new T.HemisphereLight(0xffffff,0xb29283,1.05));
     const canvas=renderer.domElement; canvas.setAttribute('aria-hidden','true');host.append(canvas);
-    const s={host,renderer,scene,rig,model,camera,t:0,pulse:0,yaw:0,pitch:0,drag:null,pointerX:0,pointerY:0,prevWidth:0,prevHeight:0,visible:true,still:false,dirty:true};
+    const s={host,renderer,scene,rig,model,camera,t:0,pulse:0,firedAt:-Infinity,yaw:0,pitch:0,drag:null,pointerX:0,pointerY:0,prevWidth:0,prevHeight:0,visible:true,still:false,dirty:true};
     canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();host.classList.remove('live');});
     canvas.addEventListener('webglcontextrestored',()=>{s.dirty=true;wake();});
     host.addEventListener('pointerdown',e=>{
       if(!e.isPrimary || e.button!==0)return;
+      s.press=[e.clientX,e.clientY];
       s.drag=[e.clientX,e.clientY];host.setPointerCapture(e.pointerId);
     });
     host.addEventListener('pointermove',e=>{
@@ -246,10 +285,20 @@
       }
       s.dirty=true;wake();
     });
-    host.addEventListener('lostpointercapture',()=>{s.drag=null;});
+    host.addEventListener('pointerup',e=>{
+      if(id==='horn' && s.press && Math.hypot(e.clientX-s.press[0],e.clientY-s.press[1])<8) fire(s);
+      s.press=null;
+    });
+    host.addEventListener('lostpointercapture',()=>{s.drag=null;s.press=null;});
     host.addEventListener('pointerleave',()=>{s.pointerX=0;s.pointerY=0;});
-    host.tabIndex=0;host.setAttribute('aria-keyshortcuts','ArrowLeft ArrowRight');
+    host.tabIndex=0;
+    host.setAttribute('aria-keyshortcuts',id==='horn'?'Enter Space ArrowLeft ArrowRight':'ArrowLeft ArrowRight');
     host.addEventListener('keydown',e=>{
+      if(id==='horn' && (e.key==='Enter' || e.key===' ')){
+        e.preventDefault();
+        if(!e.repeat)fire(s);
+        return;
+      }
       if(!['ArrowLeft','ArrowRight'].includes(e.key))return;
       e.preventDefault();s.yaw+=e.key==='ArrowLeft'?-.2:.2;s.dirty=true;wake();
     });
@@ -284,6 +333,12 @@
     if(!still() && scenes.some(s=>s.visible))wake();
   }
   function wake(){if(!frame && !document.hidden)frame=requestAnimationFrame(tick);}
+  function fire(s){
+    s.firedAt=s.t;
+    s.pulse=1;
+    s.dirty=true;
+    wake();
+  }
   function refresh(){scenes.forEach(s=>s.dirty=true);wake();}
   const observer=new IntersectionObserver(entries=>{
     for(const e of entries){
@@ -301,6 +356,6 @@
   document.addEventListener('visibilitychange',refresh);
   addEventListener('hornpulse',()=>{
     const s=scenes.find(item=>item.host.dataset.machine==='horn');
-    if(s){s.pulse=1;if(still())s.yaw+=.27;s.dirty=true;wake();}
+    if(s)fire(s);
   });
 })();
